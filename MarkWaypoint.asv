@@ -1,0 +1,29 @@
+function MarkWaypoint(varargin)
+
+    global quad;
+    x=str2double(get(quad.handler.X,'String'));
+    y=str2double(get(quad.handler.Y,'String'));
+    z=str2double(get(quad.handler.Z,'String'));
+    yaw=str2double(get(quad.handler.YAW,'String'));
+    t=str2double(get(quad.handler.T,'String'));
+    
+    if(isnan(x)||isnan(y)||isnan(z)||isnan(yaw)||isnan(t))
+        errordlg('ERROR - NO');
+        return
+    end
+    
+    
+    if(t > quad.caminho.T(end))
+        quad.caminho.X = [quad.caminho.X x];
+        quad.caminho.Y = [quad.caminho.Y y];
+        quad.caminho.Z = [quad.caminho.Z z];
+        quad.caminho.YAW = [quad.caminho.YAW yaw];
+        quad.caminho.T = [quad.caminho.T t];
+    else
+        errordlg(['ERROR - T SHOULD BE GREATER THAN ' mat2str(quad.caminho.T(end)) '.']);
+        return 
+    end
+    
+    Desenhar_trajetoria();
+
+end

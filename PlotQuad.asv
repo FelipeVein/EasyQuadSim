@@ -1,0 +1,204 @@
+function PlotQuad()
+%simmechanics
+
+global quad;
+
+% try
+
+%Transformando os bracos do quadrator para o frame A e somando  posicao
+%atual, ou seja, quad em B
+b1 = quad.R*quad.b1 + quad.posicao;
+b2 = quad.R*quad.b2 + quad.posicao;
+b3 = quad.R*quad.b3 + quad.posicao;
+b4 = quad.R*quad.b4 + quad.posicao;
+b5 = quad.R*quad.b5 + quad.posicao;
+
+%plotar trajetoria  real do quad => vem de modelo.m
+plot3(quad.Figura_principal,quad.x_plot,quad.y_plot,quad.z_plot,'k')%black
+hold(quad.Figura_principal,'on');
+
+
+
+% Quadrotor 3d Pl
+
+plot3(quad.Figura_principal,[b1(1) b3(1)],[b1(2) b3(2)],[b1(3) b3(3)],'k')
+plot3(quad.Figura_principal,[b2(1) b4(1)],[b2(2) b4(2)],[b2(3) b4(3)],'k')
+plot3(quad.Figura_principal,[quad.posicao(1) b5(1)],[quad.posicao(2) b5(2)],[quad.posicao(3) b5(3)],'r')
+
+draw_rotors(quad.l/5,quad.R,b1)
+draw_rotors(quad.l/5,quad.R,b2)
+draw_rotors(quad.l/5,quad.R,b3,1)
+draw_rotors(quad.l/5,quad.R,b4)
+
+plot3(quad.Figura_principal,quad.caminho.X,quad.caminho.Y,quad.caminho.Z,'rx')
+if(length(quad.caminho.X) > 1)
+    text(quad.Figura_principal,quad.caminho.X,quad.caminho.Y,quad.caminho.Z,'rx',mat2str(0:length(quad.caminho.X)))
+end
+xlabel(quad.Figura_principal,'X');ylabel(quad.Figura_principal,'Y');zlabel(quad.Figura_principal,'Z   ');
+set(get(quad.Figura_principal,'zlabel'),'rotation',0)
+%camera acompnhar o quadrator
+% %     axis([x-1 x+1 y-1 y+1 z-1 z+1])
+%axis adaptavel com a trajetoria definida
+% axis([min(rdes(1,:)) max(rdes(1,:)) min(rdes(1,:)) max(rdes(2,:)) min(rdes(3,:)) max(rdes(3,:))])
+
+axis(quad.Figura_principal, [-5 5 -5 5 0 5])
+
+% axis(quad.Figura_principal,[quad.xaxis.min quad.xaxis.max quad.yaxis.min quad.yaxis.max quad.zaxis.min quad.zaxis.max])
+grid(quad.Figura_principal,'on');
+%apaga tudo que tinha antes na figura
+
+%plotar a trajetoria desejada antes de rodar
+if(length(quad.rdes_plot) > 2)
+    plot3(quad.Figura_principal,quad.rdes_plot(1,:),quad.rdes_plot(2,:),quad.rdes_plot(3,:),'b--');
+end
+hold(quad.Figura_principal,'on');
+
+%plotagem 3D da trjetoria desejada
+plot3(quad.Figura_principal,quad.x_des_plot,quad.y_des_plot,quad.z_des_plot,'k--','linewidth',1.4);
+
+%plotar trajetoria  real do quad => vem de modelo.m
+plot3(quad.Figura_principal,quad.x_plot,quad.y_plot,quad.z_plot,'k') %black
+
+hold(quad.Figura_principal,'off');
+
+
+%apenas com o movimento do quadrator q plota as figuras laterais
+if(quad.iteracao>1)
+    %rdes(1) referente ao x e traça a trajetoria desejada --
+    plot(quad.Figura_x,0:quad.dt:quad.dt*quad.iteracao,quad.x_plot,'b')
+    hold(quad.Figura_x,'on');
+    plot(quad.Figura_x,0:quad.dt:quad.dt*(quad.iteracao-1),quad.rdes(1,1:quad.iteracao),'r--')
+    %tracar na msm figura a linha de onde o QUAD ta em x
+    grid(quad.Figura_x,'on');
+    %limites do eixo adaptaveis com a trajetoria desejada e aos tempos
+%   axis(quad.Figura_x,[0 quad.dt*(quad.iteracao-1) min(quad.rdes(1,:))-1 max(quad.rdes(1,:))+1])
+    axis (quad.Figura_x,[0 quad.caminho.T(end) min(quad.rdes(1,:))-1 max(quad.rdes(1,:))+1])
+    %xlabel(quad.Figura_x,'Tempo');
+    ylabel(quad.Figura_x,'X   ');
+    hold(quad.Figura_x,'off');
+    set(quad.Figura_x,'XTickLabel',[])
+    set(get(quad.Figura_x,'ylabel'),'rotation',0)
+        
+    plot(quad.Figura_y,0:quad.dt:quad.dt*quad.iteracao,quad.y_plot,'b')
+    hold(quad.Figura_y,'on');
+    plot(quad.Figura_y,0:quad.dt:quad.dt*(quad.iteracao-1),quad.rdes(2,1:quad.iteracao),'r--')
+    grid(quad.Figura_y,'on');
+    %axis(quad.Figura_y,[0 quad.dt*(quad.iteracao-1) min(quad.rdes(2,:))-1 max(quad.rdes(2,:))+1])
+    axis (quad.Figura_y,[0 quad.caminho.T(end) min(quad.rdes(2,:))-1 max(quad.rdes(2,:))+1])
+    %xlabel(quad.Figura_y,'Tempo');
+    ylabel(quad.Figura_y,'Y   ');
+    hold(quad.Figura_y,'off');
+    set(quad.Figura_y,'XTickLabel',[])
+    set(get(quad.Figura_y,'ylabel'),'rotation',0)
+ %   
+    plot(quad.Figura_z,0:quad.dt:quad.dt*quad.iteracao,quad.z_plot,'b')
+    hold(quad.Figura_z,'on');
+    plot(quad.Figura_z,0:quad.dt:quad.dt*(quad.iteracao-1),quad.rdes(3,1:quad.iteracao),'r--')
+    grid(quad.Figura_z,'on');
+    %axis(quad.Figura_z,[0 quad.dt*(quad.iteracao-1) min(quad.rdes(3,:))-1 max(quad.rdes(3,:))+1])
+    axis (quad.Figura_z,[0 quad.caminho.T(end) min(min(quad.rdes(3,:))-1,0) max(quad.rdes(3,:))+1])
+    %xlabel(quad.Figura_z,'Tempo');
+    ylabel(quad.Figura_z,'Z   ');
+    hold(quad.Figura_z,'off');
+    set(quad.Figura_z,'XTickLabel',[])
+    set(get(quad.Figura_z,'ylabel'),'rotation',0)
+ %   
+    plot(quad.Figura_roll,0:quad.dt:quad.dt*quad.iteracao,quad.roll_plot,'b')
+    hold(quad.Figura_roll,'on');
+    plot(quad.Figura_roll,0:quad.dt:quad.dt*(quad.iteracao-1),quad.rdes(4,1:quad.iteracao),'r--')
+    grid(quad.Figura_roll,'on');
+    %axis(quad.Figura_roll,[0 quad.dt*(quad.iteracao-1) min(quad.rdes(4,:))-0.1 max(quad.rdes(4,:))+0.1])
+    axis (quad.Figura_roll,[0 quad.caminho.T(end) -pi pi])
+   % xlabel(quad.Figura_roll,'Tempo');
+    ylabel(quad.Figura_roll,'Roll    ');
+    hold(quad.Figura_roll,'off');
+    set(quad.Figura_roll,'XTickLabel',[])
+    set(get(quad.Figura_roll,'ylabel'),'rotation',0)
+%    
+    plot(quad.Figura_pitch,0:quad.dt:quad.dt*quad.iteracao,quad.pitch_plot,'b')
+    hold(quad.Figura_pitch,'on');
+    plot(quad.Figura_pitch,0:quad.dt:quad.dt*(quad.iteracao-1),quad.rdes(5,1:quad.iteracao),'r--')
+    grid(quad.Figura_pitch,'on');
+    %axis(quad.Figura_pitch,[0 quad.dt*(quad.iteracao-1) min(quad.rdes(5,:))-0.1 max(quad.rdes(5,:))+0.1])
+    axis (quad.Figura_pitch,[0 quad.caminho.T(end) -pi pi])
+    %xlabel(quad.Figura_pitch,'Tempo');
+    ylabel(quad.Figura_pitch,'Pitch     ');
+    hold(quad.Figura_pitch,'off');
+    set(quad.Figura_pitch,'XTickLabel',[])
+    set(get(quad.Figura_pitch,'ylabel'),'rotation',0)
+    %     
+    plot(quad.Figura_yaw,0:quad.dt:quad.dt*quad.iteracao,quad.yaw_plot,'b')
+    hold(quad.Figura_yaw,'on');
+    plot(quad.Figura_yaw,0:quad.dt:quad.dt*(quad.iteracao-1),quad.rdes(6,1:quad.iteracao),'r--')
+    grid(quad.Figura_yaw,'on');
+    %axis(quad.Figura_yaw,[0 quad.dt*(quad.iteracao-1) min(quad.rdes(6,:))-0.1 max(quad.rdes(6,:))+0.1])
+    axis (quad.Figura_yaw,[0 quad.caminho.T(end) -7 7]) %limitado entre -2*pi e 2*pi
+   % xlabel(quad.Figura_yaw,'Tempo');
+    ylabel(quad.Figura_yaw,'Yaw    ');
+    hold(quad.Figura_yaw,'off');
+    set(quad.Figura_yaw,'XTickLabel',[])
+    set(get(quad.Figura_yaw,'ylabel'),'rotation',0)
+    %
+%    plot(quad.Figura_CSI,quad.CSI,'b')
+    plot(quad.Figura_CSI,0:quad.dt:quad.dt*(quad.iteracao-1),quad.CSI,'b')
+    hold(quad.Figura_CSI,'on');
+    plot(quad.Figura_CSI,0:quad.dt:quad.dt*(quad.iteracao-1),2*ones(length(quad.CSI),1),'r--')
+    hold(quad.Figura_CSI,'on');
+    grid(quad.Figura_CSI,'on');
+    axis (quad.Figura_CSI,[0 quad.caminho.T(end) 0 2.5]) %limitado X:0 ao Tfinal a  Y:0 A 2.5
+    xlabel(quad.Figura_CSI,'Time');
+    ylabel(quad.Figura_CSI,'Psi    ');
+    hold(quad.Figura_CSI,'off');
+    set(get(quad.Figura_CSI,'ylabel'),'rotation',0)
+        
+else %plotar nada caso n tenha movimento:por isso inicia assim
+    plot(quad.Figura_x,[0],[0])
+    axis(quad.Figura_x,[0 1 -1 1])
+    ylabel(quad.Figura_x,'X   ');
+    grid(quad.Figura_x,'on')
+    set(quad.Figura_x,'XTickLabel',[])
+    set(get(quad.Figura_x,'ylabel'),'rotation',0)
+    plot(quad.Figura_y,[0],[0])
+    axis(quad.Figura_y,[0 1 -1 1])
+    ylabel(quad.Figura_y,'Y   ');
+    grid(quad.Figura_y,'on')
+    set(quad.Figura_y,'XTickLabel',[])
+    set(get(quad.Figura_y,'ylabel'),'rotation',0)
+    plot(quad.Figura_z,[0],[0])
+    axis(quad.Figura_z,[0 1 -1 1])
+    ylabel(quad.Figura_z,'Z   ');
+    grid(quad.Figura_z,'on')
+    set(quad.Figura_z,'XTickLabel',[])
+    set(get(quad.Figura_z,'ylabel'),'rotation',0)
+    plot(quad.Figura_roll,[0],[0])
+    axis(quad.Figura_roll,[0 1 -1 1])
+    ylabel(quad.Figura_roll,'Roll    ');
+    grid(quad.Figura_roll,'on')
+    set(quad.Figura_roll,'XTickLabel',[])
+    set(get(quad.Figura_roll,'ylabel'),'rotation',0)
+    plot(quad.Figura_pitch,[0],[0])
+    axis(quad.Figura_pitch,[0 1 -1 1])
+    ylabel(quad.Figura_pitch,'Pitch     ');
+    grid(quad.Figura_pitch,'on')
+    set(quad.Figura_pitch,'XTickLabel',[])
+    set(get(quad.Figura_pitch,'ylabel'),'rotation',0)
+    plot(quad.Figura_yaw,[0],[0])
+    axis(quad.Figura_yaw,[0 1 -1 1])
+    ylabel(quad.Figura_yaw,'Yaw    ');
+    grid(quad.Figura_yaw,'on')
+    set(quad.Figura_yaw,'XTickLabel',[])
+    set(get(quad.Figura_yaw,'ylabel'),'rotation',0)
+    plot(quad.Figura_CSI,[0],[0])
+    axis(quad.Figura_CSI,[0 1 -1 1])
+    ylabel(quad.Figura_CSI,'Psi    ');
+    grid(quad.Figura_CSI,'on')
+    xlabel(quad.Figura_CSI,'Time');
+    set(get(quad.Figura_CSI,'ylabel'),'rotation',0)
+    drawnow
+end
+% catch
+%     quad.StartSimulation = 2; % end mainLoop
+% end
+% axis(quad.Figura_principal,[quad.xaxis.min quad.xaxis.max quad.yaxis.min quad.yaxis.max quad.zaxis.min quad.zaxis.max])
+
+end
