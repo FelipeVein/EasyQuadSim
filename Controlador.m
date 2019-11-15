@@ -24,7 +24,7 @@ function Controlador
     
     %equacao 15,16,17 do artigo
     %Kcd e o vetor de ganhos derivativos do erro de velocidade
-    %Kcp é o vetor de ganhos proporcionais do erro de posicao
+    %Kcp Ã© o vetor de ganhos proporcionais do erro de posicao
     quad.rc(1:3) = quad.rc(1:3) + quad.Kcd.*(quad.rdv(1:3,quad.iteracao) - quad.measured_states(7:9)) + quad.Kcp.* (quad.rdes(1:3,quad.iteracao) - quad.measured_states(1:3));
   
     %Equacao 19 20 e 21 do artigo
@@ -130,6 +130,5 @@ quad.T_medido = [1 , 0, -quad.measured_states(5);
     quad.roll_des_plot = [quad.roll_des_plot quad.rdes(4,quad.iteracao)];
     quad.pitch_des_plot = [quad.pitch_des_plot quad.rdes(5,quad.iteracao)];
     quad.yaw_des_plot = [quad.yaw_des_plot quad.rdes(6,quad.iteracao)];
-    
     
 end
