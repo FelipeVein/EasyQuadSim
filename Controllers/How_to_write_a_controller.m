@@ -10,7 +10,7 @@ function How_to_write_a_controller()
      
     
     
-    
+% % % % % % % % % % % % % % % % % % % % % % % % % % % % %     
     
 %   all important variables are in the global variable quad:
 %   quad.iteracao -> current iteration
@@ -23,15 +23,18 @@ function How_to_write_a_controller()
 %   has 12 elements, and they are in the following order: x, y, z, roll,
 %   pitch, yaw, dx/dt, dy/dt, dz/dt, p, q, r
 
-    
-%   you can calculate the current measured R matrix like this:
+% % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % %     
+
+
+
+%   you should calculate the current measured R matrix like this:
 
     R_measured = [cos(quad.measured_states(6))*cos(quad.measured_states(5))-sin(quad.measured_states(4))*sin(quad.measured_states(6))*sin(quad.measured_states(5)), -cos(quad.measured_states(4))*sin(quad.measured_states(6)), cos(quad.measured_states(6))*sin(quad.measured_states(5))+cos(quad.measured_states(5))*sin(quad.measured_states(4))*sin(quad.measured_states(6));...
     cos(quad.measured_states(5))*sin(quad.measured_states(6))+cos(quad.measured_states(6))*sin(quad.measured_states(4))*sin(quad.measured_states(5)), cos(quad.measured_states(4))*cos(quad.measured_states(6)), sin(quad.measured_states(6))*sin(quad.measured_states(5))-cos(quad.measured_states(5))*sin(quad.measured_states(4))*cos(quad.measured_states(6));...
     -cos(quad.measured_states(4))*sin(quad.measured_states(5)), sin(quad.measured_states(4)), cos(quad.measured_states(4))*cos(quad.measured_states(5))];
     
 
-%   likewise, you can calculate your desired R matrix:
+%   likewise, you should calculate your desired R matrix:
 
     R_des = [cos(quad.rc(6))*cos(quad.rc(5))-sin(quad.rc(4))*sin(quad.rc(6))*sin(quad.rc(5)), -cos(quad.rc(4))*sin(quad.rc(6)), cos(quad.rc(6))*sin(quad.rc(5))+cos(quad.rc(5))*sin(quad.rc(4))*sin(quad.rc(6));...
     cos(quad.rc(5))*sin(quad.rc(6))+cos(quad.rc(6))*sin(quad.rc(4))*sin(quad.rc(5)), cos(quad.rc(4))*cos(quad.rc(6)), sin(quad.rc(6))*sin(quad.rc(5))-cos(quad.rc(5))*sin(quad.rc(4))*cos(quad.rc(6));...
@@ -40,6 +43,14 @@ function How_to_write_a_controller()
 %   given that quad.rc is a vector that contains your desired x, y, z, roll, pitch, yaw
 
     
+% % % % % % % % % % % % % % % % % % % % 
+
+%   The output should be:
+%   quad.u1 -> a scalar value that represents the input u1
+%   quad.u2 -> a 3x1 vector that represents the input u2
+
+
+% % % % % % % % % % % % % % % % % % % % 
 
     
     % you can save your current calculations to further use creating new
