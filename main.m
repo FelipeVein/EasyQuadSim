@@ -124,6 +124,7 @@ Initialize_quad();
 while(~quad.StartSimulation)
     drawnow 
     PlotQuad();
+    Draw_Trajectory();
 end
 % Start: StartSimulation = 1
 
@@ -177,7 +178,7 @@ while(quad.StartSimulation == 1)
   quad.iteracao=quad.iteracao+1;
 end
 % After ending simulation, plot results
-if(quad.StartSimulation == 3)
+if(quad.StartSimulation == 3 && ~isempty(quad.rds))
      limits=[8500*ones(length(quad.rds(1,:)),1) 1300*ones(length(quad.rds(1,:)),1)];
      figure(2)
      subplot(1,4,1)
@@ -258,6 +259,8 @@ if(quad.StartSimulation == 3)
 %     plot(quad.CSI);
 %     axis([0 length(quad.CSI) 0 2])
  
+    quad.StartSimulation = 0;
+elseif(quad.StartSimulation == 3 && isempty(quad.rds))
     quad.StartSimulation = 0;
 end
 end
