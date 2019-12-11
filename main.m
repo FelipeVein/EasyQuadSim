@@ -88,6 +88,12 @@ dropdownlist = {ControllerFiles(~[ControllerFiles.isdir]).name};
 for i = 1:length(dropdownlist)
 dropdownlist{i} = dropdownlist{i}(1:end-2);
 end
+for i = 1:length(dropdownlist)
+    if(isequal(dropdownlist{i}, 'How_to_write_a_controller'))
+        dropdownlist(i) = [];
+        break
+    end
+end
 
 quad.ControllerList = uicontrol('units','normalized','position',[0.025 .05 .1 .03],'style','popupmenu','fontsize',10,'string',dropdownlist,'value',1);
 
