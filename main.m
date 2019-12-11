@@ -69,8 +69,10 @@ uicontrol('units','normalized','position',[.01 .45 .04 .03],'style','text','font
 
 
 uicontrol('units','normalized','position',[.025 .95 .1 .03],'style','pushbutton','fontsize',10,'string','Save Simulation','callback',@SaveSimulation);
+% [.025 .9 .1 .03]
+uicontrol('units','normalized','position',[.025 .40 .1 .03],'style','pushbutton','fontsize',10,'string','Set Waypoint','callback',@MarkWaypoint);
+% uicontrol('units','normalized','position',[.05 .40 .07 .02],'style','pushbutton','fontsize',10,'string','Marcar Waypoint','callback',@MarcarWaypoint);
 
-uicontrol('units','normalized','position',[.025 .9 .1 .03],'style','pushbutton','fontsize',10,'string','Set Waypoint','callback',@MarkWaypoint);
 
 % quad.BotaoPSO = uicontrol('units','normalized','position',[.025 .36 .1 .03],'style','pushbutton','fontsize',10,'string','PSO Tunning','callback',@PSOTunning);
 
@@ -80,7 +82,14 @@ quad.StartButton = uicontrol('units','normalized','position',[.025 .21 .1 .03],'
 
 uicontrol('units','normalized','position',[.025 .16 .1 .03],'style','pushbutton','fontsize',10,'string','End/Clean Simulation','callback',@ClearSimulation);
 
-quad.ControllerList = uicontrol('units','normalized','position',[0.025 .05 .1 .03],'style','popupmenu','fontsize',10,'string',{'Linear Control';'Nonlinear Control';'Geometric Tracking'},'value',1);
+addpath('./Controllers');
+ControllerFiles = dir('Controllers');
+dropdownlist = {ControllerFiles(~[ControllerFiles.isdir]).name};
+for i = 1:length(dropdownlist)
+dropdownlist{i} = dropdownlist{i}(1:end-2);
+end
+
+quad.ControllerList = uicontrol('units','normalized','position',[0.025 .05 .1 .03],'style','popupmenu','fontsize',10,'string',dropdownlist,'value',1);
 
 PlotQuad();
 
@@ -111,19 +120,27 @@ while(~quad.StartSimulation)
     PlotQuad();
 end
 % Start: StartSimulation = 1
+
+try
+    Controller = str2func(quad.ControllerList.String{quad.ControllerList.Value});
+catch
+    return
+end
+
 while(quad.StartSimulation == 1)
    tic %starts measuring time
    
    Measures();
    
+   Controller();
 %    try
-       if(get(quad.ControllerList,'Value')==1)
-           Controlador();
-       elseif(get(quad.ControllerList,'Value')==2)
-           ControladorNaoLinear();
-       elseif(get(quad.ControllerList,'Value')==3)
-           ControladorNaoLinearArtigo();
-       end
+%        if(get(quad.ControllerList,'Value')==1)
+%            Controlador();
+%        elseif(get(quad.ControllerList,'Value')==2)
+%            ControladorNaoLinear();
+%        elseif(get(quad.ControllerList,'Value')==3)
+%            ControladorNaoLinearArtigo();
+%        end
 %    catch % GUI Error
 %        disp('ERROR at main.m')
 %        return

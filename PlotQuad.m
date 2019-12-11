@@ -34,11 +34,11 @@ xlabel(quad.MainFigure,'X');ylabel(quad.MainFigure,'Y');zlabel(quad.MainFigure,'
 set(get(quad.MainFigure,'zlabel'),'rotation',0)
 
 % % Inertial-Fixed Figure Area
-axis(quad.MainFigure, [-5 5 -5 5 0 5])
+% axis(quad.MainFigure, [-5 5 -5 5 0 5])
 % % Quad-Fixed Figure Area
 %    axis(quad.MainFigure, [x-1 x+1 y-1 y+1 z-1 z+1])
 % % TODO: adaptable figure area
-% axis(quad.MainFigure,[quad.xaxis.min quad.xaxis.max quad.yaxis.min quad.yaxis.max quad.zaxis.min quad.zaxis.max])
+axis(quad.MainFigure,[quad.xaxis.min quad.xaxis.max quad.yaxis.min quad.yaxis.max quad.zaxis.min quad.zaxis.max])
 
 
 grid(quad.MainFigure,'on');

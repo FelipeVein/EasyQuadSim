@@ -256,8 +256,12 @@ quad.rds = [];
 quad.rdes_plot = [];
 %%%
 
-
-
+quad.xaxis.min = -5;
+quad.xaxis.max = 5;
+quad.yaxis.min = -5;
+quad.yaxis.max = 5;
+quad.zaxis.min = 0;
+quad.zaxis.max = 3;
 
 
 %configura os limites do grafico 3D da janela principal
